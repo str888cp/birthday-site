@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Didi! 🎉</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #f7cac9, #92a8d1);
+      overflow-x: hidden;
+      color: #333;
+    }
+
+    #start-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #start-overlay button {
+      font-size: 1.5em;
+      padding: 20px 40px;
+      background-color: #ff7f50;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4em;
+      color: #b22222;
+      margin-bottom: 0.2em;
+      text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .container {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .slideshow img {
+      width: 90%;
+      max-width: 600px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.8s ease-in-out;
+      margin-top: 20px;
+    }
+
+    #typed-message {
+      font-size: 1.5em;
+      color: #4b0082;
+      margin-top: 25px;
+      font-style: italic;
+      max-width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    canvas#confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+
+    .balloon {
+      position: fixed;
+      bottom: -100px;
+      width: 40px;
+      height: 60px;
+      background-color: #ff69b4;
+      border-radius: 50% 50% 50% 50%;
+      animation: rise 10s infinite ease-in-out;
+      z-index: 5;
+    }
+
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 20px;
+      background: #555;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-120vh); opacity: 0; }
+    }
+
+    audio { display: none; }
+
+    .surprise-btn {
+      margin-top: 40px;
+      font-size: 1.2em;
+      background-color: #ff7f50;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .surprise-btn:hover {
+      background-color: #ff6347;
+    }
+
+    #secret-message {
+      display: none;
+      font-size: 1.3em;
+      margin-top: 30px;
+      background: rgba(255, 255, 255, 0.85);
+      border-left: 6px solid #ff7f50;
+      padding: 20px;
+      max-width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      color: #333;
+    }
+
+    .flip-box {
+      background-color: transparent;
+      width: 300px;
+      height: 200px;
+      perspective: 1000px;
+      margin: 40px auto;
+    }
+
+    .flip-box-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 1s;
+      transform-style: preserve-3d;
+    }
+
+    .flip-box.flipped .flip-box-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-box-front, .flip-box-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .flip-box-front {
+      background-color: #ffe4e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3em;
+      color: #8b0000;
+    }
+
+    .flip-box-back {
+      background-color: #fff;
+      color: #333;
+      transform: rotateY(180deg);
+      padding: 20px;
+      font-size: 1em;
+    }
+
+    .translucent {
+    background: rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-left: 6px solid #ff7f50;
+    color: #333;
+  }
+  </style>
+</head>
+<body>
+  <!-- Start overlay -->
+  <div id="start-overlay">
+    <button onclick="startCelebration()">🎶 Click to Start!!</button>
+  </div>
+
+  <audio id="birthday-audio" loop>
+    <source src="happy-birthday-334876.mp3" type="audio/mpeg">
+  </audio>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="container">
+    <h1>Happy Birthday, Didu! 🎂💖</h1>
+
+    <div class="slideshow">
+      <img id="slide" src="images/photo1.jpg" alt="Memory" />
+    </div>
+
+    <p id="typed-message"></p>
+
+    <div class="flip-box" onclick="toggleFlip(this)">
+      <div class="flip-box-inner">
+        <div class="flip-box-front">📬 Open Card</div>
+        <div class="flip-box-back">
+            Dear Diduu,<br><br>
+      Here's to more silly jokes, heart-to-heart talks and never-ending sisterly love. Wishing you endless happiness, health and beautiful moments to cherish forever! 💐💖💕
+          
+        </div>
+      </div>
+    </div>
+
+    <button class="surprise-btn" onclick="revealSecret()">🎁 Click Here!!</button>
+
+    <div id="secret-message">
+      From fighting over the remote to laughing till our stomachs hurt — we’ve been through it all. You've been my safe place, my cheerleader, and my forever favorite person to annoy.<br>No matter how much we grow, a part of me will always be that little one looking up to you. <br>Love you forever 💖
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const photos = ['images/photo1.jpg', 'images/photo2.jpg', 'images/photo3.jpg', 'images/photo4.jpg', 'images/photo5.jpg', 'images/photo6.jpg', 'images/photo7.jpg','images/photo8.jpg', 'images/photo9.jpg', 'images/photo10.jpg','images/photo11.jpg', 'images/photo12.jpg', 'images/photo13.jpg','images/photo14.jpg', 'images/photo15.jpg'];
+    const slide = document.getElementById("slide");
+    let index = 0;
+
+    function toggleFlip(card) {
+      card.classList.toggle('flipped');
+    }
+
+   function revealSecret() {
+    const secret = document.getElementById('secret-message');
+    secret.style.display = 'block';
+    secret.classList.add('translucent');
+  }
+
+    const fullMessage = "Your bright presence lights up every moment we share!!";
+    const typedMessageEl = document.getElementById("typed-message");
+    let charIndex = 0;
+
+    function typeMessage() {
+      if (charIndex < fullMessage.length) {
+        typedMessageEl.innerHTML += fullMessage.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeMessage, 80);
+      }
+    }
+
+    // Confetti
+    const defaults = { startVelocity: 25, spread: 360, ticks: 90, zIndex: 0 };
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+    setInterval(() => {
+      confetti(Object.assign({}, defaults, {
+        particleCount: 20,
+        origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 }
+      }));
+    }, 400);
+
+    // Balloons
+    function releaseBalloons(count) {
+      for (let i = 0; i < count; i++) {
+        const b = document.createElement('div');
+        b.className = 'balloon';
+        b.style.left = Math.random() * 100 + 'vw';
+        b.style.backgroundColor = ['#ff69b4', '#ffb6c1', '#add8e6', '#ffd700'][i % 4];
+        b.style.animationDelay = (Math.random() * 5) + 's';
+        b.style.animationDuration = (8 + Math.random() * 4) + 's';
+        document.body.appendChild(b);
+        setTimeout(() => b.remove(), 15000);
+      }
+    }
+    setInterval(() => releaseBalloons(2), 1500);
+
+    function startCelebration() {
+      document.getElementById('start-overlay').style.display = 'none';
+      document.getElementById('birthday-audio').play();
+      typeMessage();
+      setInterval(() => {
+        index = (index + 1) % photos.length;
+        slide.src = photos[index];
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
